@@ -1,13 +1,12 @@
-import {useNavigation} from '@react-navigation/native';
-import React, {useEffect, useState} from 'react';
-import {FlatList, StyleSheet, Text, TouchableOpacity, View} from 'react-native';
-import JobView from '../components/JobView';
+import { useNavigation } from '@react-navigation/native';
+import React, { useEffect, useState } from 'react';
+import { FlatList, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 import ApiService from '../services/ApiService';
+import JobDetailsScreen from './JobDetailsScreen';
 
 const HomeScreen = () => {
   const navigation = useNavigation();
   const [jobs, setJobs] = useState([]);
-  const [selectedJob, setSelectedJob] = useState(null);
 
   useEffect(() => {
     fetchJobs();
@@ -22,24 +21,28 @@ const HomeScreen = () => {
     }
   };
 
+  const handleJobPress = (item) => {
+    navigation.navigate('JobDetails', { item });
+  };
+
   return (
     <View style={styles.container}>
       <Text style={styles.title}>Job List</Text>
       <FlatList
         data={jobs}
-        renderItem={({item}) => (
+        renderItem={({ item }) => (
+          <TouchableOpacity onPress={() => handleJobPress(item)}>
             <View style={styles.card}>
               <Text style={styles.title}>{item.job_title}</Text>
               <Text style={styles.employer}>{item.employer_name}</Text>
-              <Text>{item.job_company}</Text>
             </View>
+          </TouchableOpacity>
         )}
-        keyExtractor={item => item.job_id}
+        keyExtractor={(item) => item.job_id}
       />
     </View>
   );
 };
-
 const styles = StyleSheet.create({
   container: {
     flex: 1,
